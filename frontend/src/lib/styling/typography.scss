@@ -1,0 +1,58 @@
+@use '$lib/styling/breakpoints' as breakpoints;
+@use '$lib/styling/fonts' as fonts;
+
+//Headings
+@mixin title {
+	font-size: 2rem;
+
+	@include breakpoints.mq(medium) {
+		font-size: 3rem;
+	}
+	@include breakpoints.mq(large) {
+		font-size: 4rem;
+		margin-top: 30vh;
+	}
+	@include breakpoints.mq(xxlarge) {
+		font-size: 6rem;
+	}
+}
+
+@mixin subtitle {
+	font-size: 1.6rem;
+	// margin-bottom: 0.5em;
+
+	@include breakpoints.mq(medium) {
+		font-size: 2rem;
+	}
+	@include breakpoints.mq(large) {
+		font-size: 2.5rem;
+	}
+}
+
+@mixin subheading {
+	font-size: 1.3rem;
+	line-height: 1.3;
+
+	@include breakpoints.mq(medium) {
+		font-size: 1.5rem;
+	}
+}
+
+//paragraphs/captions
+@mixin paragraph {
+	font-size: 1rem;
+	// line-height: 1.5;
+
+	@include breakpoints.mq($from: large) {
+		font-size: 1.2rem;
+	}
+}
+
+@mixin details {
+	font-weight: 400;
+	font-size: 0.8rem;
+
+	@include breakpoints.mq($from: large) {
+		font-size: 1rem;
+	}
+}

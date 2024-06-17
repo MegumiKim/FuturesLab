@@ -1,0 +1,24 @@
+@font-face {
+	font-family: 'FK Raster';
+	src: url('./fonts/FKRasterRomanCompactTrial-Rounded.woff') format('opentype');
+	font-variant: 'Rounded';
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'TT Interphases Pro';
+	src: url('./fonts/TTInterphasesProTrialVariable.woff') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'TT Interphases Pro';
+	src: url('./fonts/TTInterphasesProTrialBold.woff') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+$font-primary: 'TT Interphases Pro', sans-serif;
+$font-raster: 'FK Raster', sans-serif;

@@ -1,0 +1,319 @@
+@use 'sass:math';
+@use '$lib/styling/breakpoints' with (
+	$classes: (
+		small medium large xlarge xxlarge
+	),
+	$breakpoints: (
+		small: 0px,
+		medium: 768px,
+		large: 1024px,
+		xlarge: 1300px,
+		xxlarge: 1720px
+	),
+	$debug: $is-dev
+);
+@use '$lib/styling/fonts' as fonts;
+@use '$lib/styling/units' as units;
+@use '$lib/styling/typography';
+
+$bleed: (
+	small: 30px,
+	medium: 64px,
+	large: 3vw //large: 2.0834vw
+);
+
+$columns: 18;
+$gutters: (
+	small: 10px,
+	medium: 20px,
+	large: 2vw
+);
+
+:root {
+	--color-blue: #0000ff;
+
+	@each $breakpoint, $gutter in $gutters {
+		@include breakpoints.breakpoint($breakpoint) using ($breakpoint) {
+			--gutter: #{$gutter};
+		}
+	}
+
+	@each $breakpoint, $b in $bleed {
+		@include breakpoints.breakpoint($breakpoint) using ($breakpoint) {
+			--bleed: #{$b};
+			--bleed-negative: #{-$b};
+		}
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	scroll-behavior: smooth;
+	text-rendering: optimizeSpeed;
+	font-family: 'TT Interphases Pro', sans-serif;
+	font-size: 1rem;
+	color: #000000;
+	background-color: #ffffff;
+}
+
+main {
+	min-height: 88vh;
+	padding-bottom: 5%;
+}
+
+figure {
+	margin: 1em 0;
+}
+
+img,
+video {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+iframe {
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	width: 100%;
+}
+
+svg {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+p {
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+ul li {
+	padding-left: 0.5em;
+	list-style-type: '\2192';
+	margin-bottom: 0.3em;
+}
+ol li {
+	padding-left: 0.5em;
+	margin-bottom: 0.3em;
+	counter-increment: step-counter;
+}
+
+// Grid
+.container {
+	padding-left: var(--bleed);
+	padding-right: var(--bleed);
+
+	&--negative {
+		margin-left: var(--bleed-negative);
+		margin-right: var(--bleed-negative);
+	}
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat($columns, minmax(0, 1fr));
+	gap: var(--gutter);
+	padding-bottom: 0.5em;
+	// align-items: baseline;
+
+	> .cell {
+		grid-column: span #{$columns} / span #{$columns};
+	}
+
+	// Auto width
+	@include breakpoints.eachBreakpoint() using ($size) {
+		@for $i from 1 through $columns {
+			> .#{$size}-span-#{$i} {
+				grid-column: span #{$i} / span #{$i};
+			}
+		}
+
+		@for $i from 1 through $columns {
+			> .#{$size}-start-#{$i} {
+				grid-column-start: #{$i};
+			}
+
+			> .#{$size}-end-#{$i} {
+				grid-column-end: #{$i};
+			}
+		}
+	}
+}
+
+@mixin horizontalScroll() {
+	--columns: 1;
+	display: grid;
+	grid-auto-flow: column;
+	align-items: baseline;
+	grid-auto-columns: calc(
+		(100vw - (var(--gutter) * (var(--columns) - 1)) - (var(--bleed) * 2)) / var(--columns)
+	);
+
+	column-gap: var(--gutter);
+	padding-left: var(--bleed);
+	padding-right: var(--bleed);
+
+	&.grid {
+		// Reset GRID
+		grid-template-columns: unset !important;
+		> * {
+			grid-column: unset !important;
+		}
+
+		.cell {
+			height: 100%;
+		}
+	}
+
+	@include breakpoints.mq($from: medium) {
+		--columns: 2;
+	}
+
+	@include breakpoints.mq($from: large) {
+		--columns: 3;
+	}
+}
+
+.horizontal-scroll {
+	@include horizontalScroll;
+}
+
+.horizontal-scroll-until-medium {
+	@include breakpoints.mq($until: medium) {
+		@include horizontalScroll();
+	}
+}
+
+.horizontal-scroll-until-large {
+	@include breakpoints.mq($until: large) {
+		@include horizontalScroll();
+	}
+}
+
+// Typography
+//
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 400;
+}
+
+h1 {
+	@include typography.title;
+
+	+ p {
+		margin-bottom: 2em;
+	}
+}
+
+h2,
+.header-2 {
+	@include typography.subtitle;
+
+	+ p {
+		margin-top: 0;
+	}
+}
+
+h3,
+.is-large {
+	margin-bottom: 0.5em;
+	@include typography.subheading;
+
+	+ p {
+		margin-top: 0;
+	}
+}
+
+p,
+ul,
+ol,
+.paragraph {
+	@include typography.paragraph;
+}
+
+figcaption,
+.caption {
+	&,
+	> p {
+		margin-top: 0.5em;
+		margin-bottom: 0;
+		@include typography.details;
+	}
+}
+
+.is-small-faded {
+	@include typography.details;
+	opacity: 0.5;
+}
+
+.is-small {
+	@include typography.details;
+
+	> p {
+		@include typography.details;
+	}
+}
+
+li {
+	@include typography.paragraph;
+}
+
+blockquote {
+	all: unset;
+	position: relative;
+	p {
+		@include typography.subtitle; // @include breakpoints.mq($from: medium) {
+		margin: 0.2em 0;
+	}
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.small-icon {
+	width: 1em;
+	height: 1em;
+	display: inline;
+}
+
+.cell {
+	a {
+		text-decoration: underline;
+	}
+}
+
+iframe {
+	border-radius: 18px;
+}
+
+//Rich text styles
+.richText {
+	p {
+		margin: 1em 0;
+		line-height: 1.5;
+	}
+}
+
+.GlossaryItem__description {
+	p {
+		line-height: 1.5;
+	}
+}
