@@ -1,5 +1,1 @@
-# futureslab.dev
-
-### Prod
-
-### Stage
+https://beta.futureslab.dev/
